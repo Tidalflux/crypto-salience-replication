@@ -1,0 +1,8 @@
+salience:
+  theta: 0.1
+  delta: 0.7
+
+sample:
+  start_date: "2020-01-01"
+  end_date: "2025-01-31"
+  min_mcap: 1000000
