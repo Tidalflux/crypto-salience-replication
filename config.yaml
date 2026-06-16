@@ -1,8 +1,19 @@
+data:
+  start_date: "2025-06-15"
+  end_date: "2026-06-14"
+  top_n_coins: 150
+  sleep_between_coins: 15
+  sleep_every_n_coins: 90
+  batch_size: 10
+  sleep_between_requests: 1.5
+
+coingecko:
+  base_url: "https://api.coingecko.com/api/v3"
+
+cryptocompare:
+  api_key_env: "CRYPTOCOMPARE_API_KEY"
+  base_url: "https://min-api.cryptocompare.com/data"
+
 salience:
   theta: 0.1
   delta: 0.7
-
-sample:
-  start_date: "2020-01-01"
-  end_date: "2025-01-31"
-  min_mcap: 1000000

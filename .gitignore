@@ -27,12 +27,18 @@ wheels/
 data/*.parquet
 data/*.csv
 data/*.pkl
+data/*failures.txt
+data/raw/
 *.parquet
 *.feather
+download.log
 
 # 环境
 .env
 .venv
+secrets.txt
+secrets*.txt
+config.local.yaml
 env/
 venv/
 ENV/
@@ -49,3 +55,11 @@ venv.bak/
 results/**
 !results/
 !results/.gitkeep
+!results/*.csv
+
+# LaTeX 中间文件
+reports/*.aux
+reports/*.fdb_latexmk
+reports/*.fls
+reports/*.log
+reports/*.out

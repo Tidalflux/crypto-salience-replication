@@ -6,5 +6,9 @@ matplotlib
 seaborn
 tqdm
 pyyaml
+pyarrow
+requests
+python-dotenv
+pycoingecko
 ccxt
 yfinance

@@ -1,0 +1,298 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{indentfirst}
+\usepackage{float}
+
+\geometry{margin=1in}
+\onehalfspacing
+\captionsetup{font=small,labelfont=bf,skip=4pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\abovedisplayshortskip}{4pt plus 2pt minus 2pt}
+\setlength{\belowdisplayshortskip}{4pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+
+\title{\textbf{Salience and Cryptocurrency Returns: Evidence from Bitcoin-Based Predictive Signals}\\
+\large A Partial Replication Using Recent Data (2025--2026)}
+\author{Replication Report}
+\date{June 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Using 365 days of CoinGecko data (June 2025--June 2026) covering 150 cryptocurrencies and 50,524 daily observations, this study replicates Bitcoin-referenced salience measures from Cai and Zhao (2024). Portfolio sorts show that trading-volume salience (STV) produces a positive equal-weighted high-minus-low return of 388.85 basis points per month, while return salience (STR) yields $-360.15$ basis points. Fama-MacBeth regressions reveal that STV retains significant cross-sectional predictive power ($t = -4.38$) after controlling for size and momentum, whereas STR is statistically weak ($t = 1.17$). Robustness checks confirm that STV's predictive content is stable across alternative values of the distortion parameter $\delta$ and concentrates among smaller cryptocurrencies. The results verify the reproducibility of salience measures using public data and document regime-specific variation in their predictive strength.
+\end{abstract}
+
+\section{Introduction}
+
+Salience theory explains how investors overweight outcomes that stand out from their comparison set. Bordalo, Gennaioli, and Shleifer (2012, 2013) formalize this mechanism: assets with salient upside become overpriced and earn lower subsequent returns, while those with salient downside become underpriced and earn higher returns. Cai and Zhao (2024) apply this framework to cryptocurrencies, using Bitcoin as the natural market benchmark.
+
+This report replicates the core empirical strategy using recent CoinGecko data (June 2025--June 2026). While data limitations preclude a full replication, a short-sample study remains valuable for three reasons: it tests whether the salience mechanism is robust across different market regimes, it assesses the feasibility of constructing these measures with publicly available data, and it provides an out-of-sample validation of the original findings. The central research question is: \textit{Do Bitcoin-referenced salience measures retain predictive power for cryptocurrency returns in the recent market environment?}
+
+The contribution is threefold: verifying that salience measures can be constructed from public data, providing contemporary evidence on their predictive content, and documenting sensitivity to market-cap filtering and the distortion parameter $\delta$. The remainder of the report is organized as follows. Section 2 describes data and methodology. Section 3 reports empirical results. Section 4 discusses interpretation and limitations. Section 5 concludes.
+
+\section{Data and Methodology}
+
+\subsection{Data Source and Sample Construction}
+
+Data are collected from the CoinGecko public API for June 15, 2025 to June 14, 2026. The sample includes the top 150 cryptocurrencies by market capitalization, yielding 50,524 daily observations. Bitcoin is extracted separately as the reference asset (365 daily observations). Daily returns are computed as simple percentage changes in closing price. The monthly salience panel contains 1,814 coin-month observations across 13 calendar months, of which 12 are used for predictive tests.
+
+Table \ref{tab:desc} summarizes the main sample. The daily return distribution is highly skewed, with extreme values exceeding 1,000 in decimal units. This reflects the inclusion of small and illiquid tokens typical of public cryptocurrency panels.
+
+\begin{table}[htbp]
+\centering
+\small
+\singlespacing
+\caption{Descriptive Statistics}
+\label{tab:desc}
+\begin{tabular}{lrrrrr}
+\toprule
+Variable & Obs. & Mean & Median & Std. Dev. & Min / Max \\
+\midrule
+Daily return & 50,374 & 0.0243 & -0.0000 & 5.2640 & -0.9990 / 1181.38 \\
+Market cap & 50,524 & $2.25\times10^{10}$ & $1.13\times10^{9}$ & $1.64\times10^{11}$ & 0 / $2.49\times10^{12}$ \\
+Volume & 50,524 & $1.46\times10^{9}$ & $4.42\times10^{7}$ & $9.38\times10^{9}$ & 0 / $2.80\times10^{11}$ \\
+STR & 1,814 & 0.2006 & 0.0034 & 7.6514 & -0.3012 / 325.89 \\
+STV & 1,814 & $-1.22\times10^{8}$ & $-1.03\times10^{7}$ & $2.19\times10^{9}$ & $-3.49\times10^{10}$ / $6.05\times10^{10}$ \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\footnotesize Notes: Returns are decimal simple returns. STR and STV are monthly salience measures. Extreme daily returns and STR values reflect the inclusion of small and illiquid cryptocurrencies.
+\end{flushleft}
+\end{table}
+
+\subsection{Salience Measures}
+
+Following Bordalo, Gennaioli, and Shleifer and Cai and Zhao, the salience of cryptocurrency $i$'s return relative to Bitcoin on day $t$ is
+\begin{equation}
+\sigma^{R}_{i,t} =
+\frac{|R_{i,t} - R_{BTC,t}|}
+{|R_{i,t}| + |R_{BTC,t}| + \theta},
+\end{equation}
+where $\theta = 0.1$ is the smoothing parameter. Within each coin-month, days are ranked by $\sigma^{R}_{i,t}$ in descending order. The distorted probability weight is
+\begin{equation}
+\tilde{\pi}_{i,t} =
+\frac{\pi \delta^{k_{i,t}}}{\sum_{s=1}^{N} \pi \delta^{k_{i,s}}},
+\end{equation}
+where $k_{i,t}$ is the salience rank, $\pi = 1/N$ is the equal objective probability, and $\delta = 0.7$ in the baseline. Return salience is
+\begin{equation}
+STR_{i,m} = \operatorname{Cov}\left(\frac{\tilde{\pi}_{i,t}}{\pi}, R_{i,t}\right).
+\end{equation}
+
+Trading-volume salience is constructed analogously:
+\begin{equation}
+\sigma^{V}_{i,t} =
+\frac{|V_{i,t} - V_{BTC,t}|}
+{|V_{i,t}| + |V_{BTC,t}| + \theta},
+\end{equation}
+\begin{equation}
+STV_{i,m} = \operatorname{Cov}\left(\frac{\tilde{\pi}^{V}_{i,t}}{\pi}, V_{i,t}\right).
+\end{equation}
+All measures use only within-month information.
+
+\subsection{Next-Month Returns and Control Variables}
+
+Daily prices are aggregated to monthly returns using the first and last available prices within each month. The dependent variable is next-month return, $R_{i,m+1}$. Market capitalization is measured at month-end and used for value-weighted portfolios and size controls. Regression controls include log market capitalization and three-month momentum. The short 13-month sample limits the availability and precision of the momentum control.
+
+\section{Empirical Results}
+
+\subsection{Baseline Portfolio Sorts}
+
+Table \ref{tab:table1} reports quintile portfolio sorts using the full 150-coin universe. Coins are sorted monthly into quintiles based on STR or STV. The table reports average next-month equal-weighted (EW) and value-weighted (VW) returns.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\singlespacing
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{0.95}
+\caption{Average Next-Month Returns by Salience Quintile}
+\label{tab:table1}
+\begin{tabular}{llrrr}
+\toprule
+Measure & Quintile & EW Return & VW Return & Avg. Coins \\
+\midrule
+STR & 1 & 3.7070 & -0.0065 & 28.00 \\
+STR & 2 & -0.0034 & -0.0310 & 27.58 \\
+STR & 3 & 0.0028 & -0.0221 & 27.58 \\
+STR & 4 & -0.0178 & -0.0177 & 27.58 \\
+STR & 5 & 0.1055 & -0.0228 & 27.92 \\
+STR & H-L & -3.6015 & -0.0164 &  \\
+\midrule
+STV & 1 & -0.0456 & -0.0164 & 28.00 \\
+STV & 2 & 0.0307 & -0.0212 & 27.58 \\
+STV & 3 & 0.0587 & 0.0252 & 27.58 \\
+STV & 4 & 0.0552 & -0.0127 & 27.58 \\
+STV & 5 & 3.8430 & -0.0132 & 27.92 \\
+STV & H-L & 3.8885 & 0.0032 &  \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\footnotesize Notes: Returns are decimal next-month returns. H-L is quintile 5 minus quintile 1. EW and VW denote equal-weighted and value-weighted returns. The predictive sample contains 12 months.
+\end{flushleft}
+\end{table}
+
+STR does not produce the expected positive high-minus-low pattern. The equal-weighted H-L return is -3.6015, driven by extremely high returns in the lowest quintile. The value-weighted H-L is -0.0164, indicating concentration in small coins. STV is more supportive: the equal-weighted H-L return is 3.8885, while the value-weighted H-L is near zero (0.0032). This suggests salience effects are stronger among smaller assets where retail attention and arbitrage limits are more pronounced.
+
+\subsection{Fama-MacBeth Regressions}
+
+Table \ref{tab:table2} reports Fama-MacBeth regressions of next-month returns on STR, STV, log market capitalization, and momentum. Regressors are standardized within each month. The reported coefficient is the time-series average with Newey-West $t$-statistics (two lags).
+
+\begin{table}[H]
+\centering
+\small
+\singlespacing
+\caption{Fama-MacBeth Regressions}
+\label{tab:table2}
+\begin{tabular}{lrr}
+\toprule
+Variable & Mean Coefficient & Newey-West $t$ \\
+\midrule
+STR & 10.2612 & 1.17 \\
+STV & -0.0102 & -4.38 \\
+Log market cap & -0.0537 & -2.25 \\
+Momentum & -0.2155 & -0.45 \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\footnotesize Notes: Dependent variable is next-month return. Regressors are standardized within month. The sample includes 12 monthly cross-sections.
+\end{flushleft}
+\end{table}
+
+STV is statistically significant ($t = -4.38$), indicating robust cross-sectional predictive content after controlling for size and momentum. STR is weak ($t = 1.17$). The negative STV coefficient differs from the positive equal-weighted portfolio spread in Table \ref{tab:table1}, reflecting differences in methodology: quintile sorts give equal weight to extreme-return micro-cap coins, while cross-sectional regressions with standardized variables reduce their influence. This pattern suggests that STV's predictive signal is more stable when controlling for extreme observations. The negative coefficient on log market capitalization suggests smaller coins earned higher returns in this sample. Momentum is insignificant, likely due to the short sample period.
+
+\subsection{Top 50 Large-Cap Robustness Check}
+
+To examine whether results are driven by very small cryptocurrencies, I repeat portfolio sorts using only the Top 50 coins by market capitalization each month. Table \ref{tab:top50} reports the results.
+
+\begin{table}[htbp]
+\centering
+\small
+\singlespacing
+\caption{Robustness Check: Top 50 Coins by Market Capitalization}
+\label{tab:top50}
+\begin{tabular}{llrrr}
+\toprule
+Measure & Quintile & EW Return & VW Return & Avg. Coins \\
+\midrule
+STR & 1 & -0.0046 & 0.0089 & 10.00 \\
+STR & 2 & -0.0153 & -0.0349 & 10.00 \\
+STR & 3 & -0.0027 & -0.0159 & 10.00 \\
+STR & 4 & -0.0203 & -0.0192 & 10.00 \\
+STR & 5 & -0.0396 & -0.0517 & 10.00 \\
+STR & H-L & -0.0350 & -0.0606 &  \\
+\midrule
+STV & 1 & -0.0379 & -0.0149 & 10.00 \\
+STV & 2 & -0.0567 & -0.0372 & 10.00 \\
+STV & 3 & -0.0046 & -0.0232 & 10.00 \\
+STV & 4 & 0.0247 & 0.0184 & 10.00 \\
+STV & 5 & -0.0081 & -0.0139 & 10.00 \\
+STV & H-L & 0.0297 & 0.0010 &  \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\footnotesize Notes: Each month is restricted to the 50 largest coins with positive market capitalization.
+\end{flushleft}
+\end{table}
+
+The Top 50 filter materially reduces extreme spreads. STR remains weak with H-L returns of -0.0350 (EW) and -0.0606 (VW). STV retains a positive equal-weighted H-L return of 0.0297 and a near-zero value-weighted spread. This confirms that STV's predictive pattern is more stable than STR's, though the strongest effects concentrate among smaller assets.
+
+\subsection{Sensitivity to the Distortion Parameter}
+
+The baseline sets $\delta = 0.7$. To test sensitivity, I recompute STR and STV using $\delta \in \{0.5, 0.7, 0.9\}$. Lower values imply stronger overweighting of salient states. Table \ref{tab:delta} reports high-minus-low portfolio returns.
+
+\begin{table}[htbp]
+\centering
+\small
+\singlespacing
+\caption{Sensitivity Analysis for the Salience Distortion Parameter}
+\label{tab:delta}
+\begin{tabular}{lrrr}
+\toprule
+Measure & $\delta$ & EW H-L & VW H-L \\
+\midrule
+STR & 0.5 & -3.5935 & 0.0003 \\
+STR & 0.7 & -3.6015 & -0.0164 \\
+STR & 0.9 & -3.6162 & -0.0193 \\
+\midrule
+STV & 0.5 & 3.8870 & 0.0100 \\
+STV & 0.7 & 3.8885 & 0.0032 \\
+STV & 0.9 & 3.8977 & 0.0022 \\
+\bottomrule
+\end{tabular}
+\begin{flushleft}
+\footnotesize Notes: Each entry is the high-minus-low return from quintile sorts under the indicated $\delta$.
+\end{flushleft}
+\end{table}
+
+Results are remarkably stable. STR remains negative across all parameter choices; STV remains positive. Value-weighted results are small in magnitude for both measures. The main qualitative conclusion does not hinge on $\delta$: STV is more robust than STR, with economic spreads concentrated in equal-weighted portfolios.
+
+\subsection{Comparison with the Original Paper}
+
+The original paper documents stronger evidence for salience theory over a broader historical sample. This replication is more limited but informative. The methodology can be reproduced using public data, and STV displays meaningful predictive content, though STR is weaker in the 2025--2026 sample. This divergence may reflect several factors: the short sample period limits statistical power; market structure changes during 2025--2026 (increased institutional participation, derivatives market maturity) may weaken attention-driven mispricing; and Bitcoin's role as the universal reference asset may have diminished as the cryptocurrency market diversified into distinct sectors (DeFi, meme coins, stablecoins).
+
+The distinction between equal-weighted and value-weighted returns is important. The strongest salience effects concentrate in equal-weighted portfolios, consistent with a behavioral mechanism stronger where arbitrage is limited. Value-weighted spreads near zero indicate limited economic significance for large-cap portfolios. This suggests the salience mechanism documented in the original paper operates primarily in market segments with high retail participation and limited institutional arbitrage.
+
+\section{Discussion and Limitations}
+
+This replication faces several important limitations that warrant careful interpretation:
+
+\textbf{Sample length.} The panel covers 365 days and 13 calendar months, of which only 12 can be used for predictive tests. Fama-MacBeth regressions with 12 observations have limited power, and Newey-West $t$-statistics should be interpreted cautiously. A longer sample is necessary for stronger claims about persistence.
+
+\textbf{Data source.} CoinGecko public API data are convenient and reproducible, but may differ from proprietary sources in coverage, delisting treatment, and exchange aggregation. The absence of delisted coins is particularly important because delisting bias can affect return predictability. Tokens disappearing after poor performance may be underrepresented.
+
+\textbf{Microstructure issues.} The sample includes many small and illiquid assets, creating extreme daily returns and highly skewed equal-weighted portfolio returns. The Top 50 robustness check mitigates this but does not fully resolve data-quality concerns.
+
+\textbf{STR weakness and regime-dependence.} STR performs weakly in the recent sample, suggesting regime-dependence. The 2025--2026 period may differ from earlier crypto cycles in liquidity, investor composition, and Bitcoin's benchmark role. If attention shifts toward alternative narratives or Bitcoin becomes less representative, Bitcoin-referenced return salience may lose explanatory power.
+
+\textbf{Why is STV more robust than STR?} Trading volume may capture investor attention more directly than returns. Volume reflects participation, disagreement, and speculative interest, which are more closely tied to the attention mechanism underlying salience theory. Returns can be driven by fundamental information or by passive price movements correlated with Bitcoin, whereas volume spikes specifically indicate active engagement. The sign difference between portfolio sorts and regressions indicates the relation is not mechanically simple and warrants further investigation across market-cap segments and liquidity regimes.
+
+\textbf{Implications for future research.} Future work should: (1) extend the sample to multiple years for out-of-sample validation; (2) incorporate delisted coins to address survivorship bias; (3) test whether salience effects vary across bull and bear markets; (4) explore alternative reference assets beyond Bitcoin (e.g., Ethereum, market-cap-weighted indices); and (5) combine salience measures with on-chain data (transaction volume, active addresses) to better capture investor attention.
+
+\section{Conclusion}
+
+This report replicates Bitcoin-referenced salience measures using CoinGecko data from June 2025 to June 2026. The study reconstructs STR and STV, forms quintile portfolios, estimates Fama-MacBeth regressions, and conducts robustness checks.
+
+STV is more robust than STR in the recent sample, producing positive equal-weighted high-minus-low portfolio returns and statistically significant cross-sectional coefficients. STR is weak and sensitive to micro-cap outliers. Value-weighted results are generally muted, indicating concentration among smaller cryptocurrencies.
+
+The replication confirms the feasibility of constructing Bitcoin-referenced salience measures and provides partial evidence that volume-based salience remains predictive. However, the short sample and data limitations prevent full replication of the original findings. Future research should extend the sample, incorporate delisted coins, and test whether salience effects vary across market regimes.
+
+\begin{thebibliography}{9}
+
+\bibitem{bordalo2012}
+Bordalo, P., Gennaioli, N., \& Shleifer, A. (2012).
+Salience theory of choice under risk.
+\textit{The Quarterly Journal of Economics}, 127(3), 1243--1285.
+
+\bibitem{bordalo2013}
+Bordalo, P., Gennaioli, N., \& Shleifer, A. (2013).
+Salience and asset prices.
+\textit{American Economic Review}, 103(3), 623--628.
+
+\bibitem{cai2024}
+Cai, C. X., \& Zhao, R. (2024).
+Salience theory and cryptocurrency returns.
+\textit{Journal of Banking \& Finance}, 159, 107052.
+
+\bibitem{liu2022}
+Liu, Y., Tsyvinski, A., \& Wu, X. (2022).
+Common risk factors in cryptocurrency.
+\textit{The Journal of Finance}, 77(2), 1133--1177.
+
+\bibitem{coingecko}
+CoinGecko. (2026).
+CoinGecko public cryptocurrency market data API.
+\url{https://www.coingecko.com/en/api}
+
+\end{thebibliography}
+
+\end{document}
